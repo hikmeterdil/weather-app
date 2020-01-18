@@ -1,0 +1,30 @@
+.App {
+  text-align: center;
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: small;
+}
+
+
+.weather {
+  border:3px solid black;
+  margin:20px;
+  margin-bottom:20px;
+  width:350px;  
+  height:170px;
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.para {
+  margin:5px;
+}
+
+.condition {
+  margin:1px;
+  font-weight: bold;
+}
