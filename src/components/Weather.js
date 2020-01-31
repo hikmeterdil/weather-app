@@ -12,8 +12,13 @@ export function Weather() {
   const fetchData = async inputValue => {
     try {
       setIsLoading(true);
+
       const QUERY_URL = `https://api.openweathermap.org/data/2.5/weather?appid=${process.env.REACT_APP_OPENWEATHERMAP_API_KEY}&q=${inputValue}`;
       const res = await fetch(QUERY_URL);
+
+      if (!res.ok) {
+        throw new Error("City not found!");
+      }
       const data = await res.json();
       setCityData(data);
       setIsLoading(false);
@@ -38,8 +43,8 @@ export function Weather() {
         handleSubmit={handleSubmit}
       />
       {isLoading && <p>Loading...</p>}
+      {hasError && <p>Error! {inputValue} not found! </p>}
       {cityData.name && <City cityData={cityData} />}
-      {hasError && <p>Error...</p>}
     </>
   );
 }
