@@ -1,18 +1,45 @@
-import React from 'react';
-import data from './city-weather.json';
+import React from "react";
+import { useState } from "react";
+import { Search } from "./Search";
+import { City } from "./City";
 export function Weather() {
-
-return(
-    <div className="weather-cont">
-{data.map(item =>
-<div className='weather'>
-<h2 className="name" key={item.sys.id}>{item.name}, {item.sys.country}</h2>
-<h3 className="condition" key={item.sys.id}>{item.weather[0].main}</h3>
-<p className="condition" key={item.sys.id}>{item.weather[0].description}</p>
-<p className="para" key={item.sys.id}>{`min-temp: ${item.main.temp_min}`}</p>
-<p className="para" key={item.sys.id}>{`max-temp: ${item.main.temp_max}`}</p>
-<p className="para" key={item.sys.id}>{`location: ${item.coord.lon}, ${item.coord.lat}`}</p>
-</div>
-)}
-</div>
-)};
+  const [inputValue, setInputValue] = useState("");
+  const [cityData, setCityData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const fetchData = async inputValue => {
+    try {
+      setIsLoading(true);
+      const QUERY_URL = `https://api.openweathermap.org/data/2.5/weather?appid=${process.env.REACT_APP_OPENWEATHERMAP_API_KEY}&q=${inputValue}`;
+      const res = await fetch(QUERY_URL);
+      if (!res.ok) {
+        throw new Error("City not found!");
+      }
+      const data = await res.json();
+      setCityData(data);
+      setIsLoading(false);
+      setHasError(false);
+    } catch (err) {
+      setHasError(true);
+      setIsLoading(false);
+    }
+  };
+  function handleInputChange(e) {
+    setInputValue(e.target.value);
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    fetchData(inputValue);
+  }
+  return (
+    <>
+      <Search
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+      />
+      {isLoading && <p>Loading...</p>}
+      {hasError && <p>Error! {inputValue} not found! </p>}
+      {cityData.name && <City cityData={cityData} />}
+    </>
+  );
+}
