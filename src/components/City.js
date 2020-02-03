@@ -10,7 +10,7 @@ return(
 <p className="para" >min-temp: {cityData.main.temp_min}</p>
 <p className="para" >max-temp: {cityData.main.temp_max}</p>
 <p className="para" >location: {cityData.coord.lon}, {cityData.coord.lat}</p>
-<button onClick={handleDelete}>Remove</button>
+<button onClick={handleDelete(cityData.id)}>Remove</button>
 </div>
 </div>
 )};

@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Search } from "./Search";
 import { City } from "./City";
 
-let idCounter = 0
+let idCounter = 0;
 
 function uniqueId() {
-    return idCounter++
+  return idCounter++;
 }
-
 
 export function Weather() {
   const [inputValue, setInputValue] = useState("");
@@ -26,16 +25,18 @@ export function Weather() {
       }
       const data = await res.json();
       setSearchHistory(currentSearchHistory => [
-        Object.assign(data, {id: uniqueId()}),
+        Object.assign(data, { id: uniqueId() }),
         ...currentSearchHistory
       ]);
       setIsLoading(false);
-      setHasError(false);
+
       setErrorMessage(null);
     } catch (err) {
       setErrorMessage(`Error! ${inputValue} not found`);
       setHasError(true);
       setIsLoading(false);
+    } finally {
+      setHasError(false);
     }
   };
   function handleInputChange(e) {
@@ -45,22 +46,25 @@ export function Weather() {
     e.preventDefault();
     fetchData(inputValue);
   }
-  function handleDeleteCity(cityId) {
-      setSearchHistory(history => history.filter(city => (city.id !== cityId)))
-  }
+  const handleDeleteCity = cityId => () => {
+    setSearchHistory(cities => cities.filter(city => city.id !== cityId));
+  };
+
   return (
     <>
       <Search
-        handleInputChange={handleInputChange}
+        handleInputChanbge={handleInputChange}
         handleSubmit={handleSubmit}
       />
       {isLoading && <p>Loading...</p>}
       {hasError && <p>{errorMessage}</p>}
       {searchHistory.map(cityData => (
-          <City key={cityData.id} 
-                cityData={cityData}
-                handleDelete={handleDeleteCity.bind(cityData.id)}/>)
-      )}
+        <City
+          key={cityData.id}
+          cityData={cityData}
+          handleDelete={handleDeleteCity}
+        />
+      ))}
     </>
   );
 }
